@@ -1,4 +1,5 @@
 import numpy as np
+from abc import ABC, abstractmethod
 
 class DirectSolver():
     
@@ -319,3 +320,74 @@ class Models(DirectSolver):
             print(f'J_test(w) = {J_test}')
 
         return J_train, J_test
+    
+
+
+# class defining common loss interface
+class Loss(ABC):
+
+    # common initializer
+    def __init__(self, dimension, l, learning_rate):
+        self.dimension = dimension
+        self.l = l
+        self.learning_rate = learning_rate
+        self.weight = np.random.uniform(low=0, high=1, size=(dimension, 1))
+        self.cache = None
+        self.grad = None
+
+    # calculates loss and stores varibales necessary to calculate gradient
+    @abstractmethod
+    def forward(self):
+        pass
+    
+    # calculates gradient based on stored variables from forward pass
+    @abstractmethod
+    def backward(self):
+        pass
+
+    # updates weights based on calculated gradient
+    @abstractmethod
+    def step():
+        pass
+
+
+
+class HingeLossClassification(Loss):
+    
+
+    def forward(self, X, y):
+        y = y.reshape(-1, 1)               # ensure column vector and not (N,)
+        output = X @ self.weight          
+        margins = 1 - y * output           
+        loss = np.maximum(0, margins)      
+        self.cache = (X, y, margins)
+        return loss.sum() + 0.5 * self.l * np.linalg.norm(self.weight)**2
+
+    def backward(self):
+        X, y, margins = self.cache
+        indicator = (margins > 0).astype(float)  
+        self.grad = -(X.T @ (indicator * y)) + self.l * self.weight  
+        return self.grad
+
+    def step(self):
+        self.weight -= self.learning_rate * self.grad
+    
+class LogisticLossClassification(Loss):
+
+    def forward(self, X, y):
+        y = y.reshape(-1, 1)                 # ensure column vector and not (N,)
+        output = X @ self.weight             
+        logits = -y * output                 
+        loss_vec = np.logaddexp(0.0, logits) 
+        self.cache = (X, y, logits)
+        return loss_vec.sum() + 0.5 * self.l * np.linalg.norm(self.weight)**2
+
+    def backward(self):
+        X, y, logits = self.cache
+        probs = 1.0 / (1.0 + np.exp(-logits))            
+        self.grad = -(X.T @ (y * probs)) + self.l * self.weight 
+        return self.grad
+
+    def step(self):
+        self.weight -= self.learning_rate * self.grad
+
