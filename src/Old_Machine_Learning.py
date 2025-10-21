@@ -391,3 +391,4 @@ class LogisticLossClassification(Loss):
     def step(self):
         self.weight -= self.learning_rate * self.grad
 
+
