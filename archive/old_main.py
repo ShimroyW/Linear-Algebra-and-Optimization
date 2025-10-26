@@ -118,3 +118,4 @@ if save_fig:
     fig.savefig(directory + '/' + fig_name)
 
 plt.show()
+
