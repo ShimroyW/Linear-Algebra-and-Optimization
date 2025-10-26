@@ -186,7 +186,7 @@ class Models(DirectSolver):
             print(f'J_train(w) = {J_train}')
             print(f'J_test(w) = {J_test}')
 
-        return J_train, J_test
+        return J_train, J_test, w
     
     
     " ---------------------------------------- Ridge Regression Method ---------------------------------------------- "
@@ -220,7 +220,7 @@ class Models(DirectSolver):
             print(f'J_train(w) = {J_train}')
             print(f'J_test(w) = {J_test}')
 
-        return J_train, J_test
+        return J_train, J_test, w
     
     
     " ---------------------------------------- Hinge Loss Classification ---------------------------------------------- "
