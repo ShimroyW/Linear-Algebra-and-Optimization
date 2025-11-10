@@ -40,7 +40,7 @@ class Models(DirectSolver):
             print(f'OLS J_train(w) = {J_train}')
             print(f'OLS J_test(w) = {J_test}')
 
-        return J_train, J_test
+        return J_train, J_test, w
     
     " ---------------------------------------- Ridge Regression Method ---------------------------------------------- "
     def _ridge_regression(self, X_train : np.ndarray, X_test : np.ndarray, y_train : np.ndarray, 
@@ -81,7 +81,7 @@ class Models(DirectSolver):
             print(f'Ridge J_train(w) = {J_train}')
             print(f'Ridge J_test(w) = {J_test}')
 
-        return J_train, J_test
+        return J_train, J_test, w
     
     " ---------------------------------------- Hinge-Loss Classifier Training ---------------------------------------------- "
     def _train_hinge_loss(self, X_train : np.ndarray, y_train : np.ndarray, 
